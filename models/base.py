@@ -1,11 +1,11 @@
 import datetime as dt
 import sqlalchemy as sa
+from sqlalchemy.ext.declarative import declarative_base
 
-Base = sa.ext.declarative.declarative_base()
+BaseModel = declarative_base()
 
 
-class BaseModel(Base):
-    id = sa.Column(sa.Integer, primary_key=True)
+class TrackedTableMixin(object):
     date_created = sa.Column(sa.DateTime, nullable=False,
                              default=dt.datetime.utcnow)
     date_modified = sa.Column(sa.DateTime, nullable=False,

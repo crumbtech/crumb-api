@@ -1,11 +1,13 @@
-import sqlalchemy as sa
+from sqlalchemy import engine
+from sqlalchemy.orm import sessionmaker
 
-SETTINGS = {
+CONFIG = {
     'drivername': 'postgres',
     'host': 'localhost',
-    'port': '5000',
+    'port': '5432',
     'username': 'postgres',
     'password': 'postgres',
 }
 
-engine = sa.create_engine(sa.engine.url.URL(**SETTINGS), echo=True)
+engine = engine.create_engine(engine.url.URL(**CONFIG), echo=True)
+Session = sessionmaker(bind=engine)
