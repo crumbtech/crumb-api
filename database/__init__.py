@@ -1,5 +1,4 @@
-from sqlalchemy import create_engine
-from sqlalchemy.engine.url import URL
+import sqlalchemy as sa
 
 SETTINGS = {
     'drivername': 'postgres',
@@ -9,4 +8,4 @@ SETTINGS = {
     'password': 'postgres',
 }
 
-engine = create_engine(URL(**SETTINGS), echo=True)
+engine = sa.create_engine(sa.engine.url.URL(**SETTINGS), echo=True)
