@@ -11,3 +11,8 @@ class TrackedTableMixin(object):
     date_modified = sa.Column(sa.DateTime, nullable=False,
                               default=dt.datetime.utcnow,
                               onupdate=dt.datetime.utcnow)
+
+
+class Crumb(TrackedTableMixin, BaseModel):
+    __tablename__ = 'crumbs'
+    id = sa.Column(sa.Integer, primary_key=True)
