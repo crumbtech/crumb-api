@@ -1,11 +1,11 @@
 from sqlalchemy import engine
 from sqlalchemy.orm import sessionmaker
 
-from config import POSTGRES
-from models import Crumb
+from data.config import POSTGRES
+from data.models import Crumb
 
-
-engine = engine.create_engine(engine.url.URL(**POSTGRES), echo=True)
+postgres_url = engine.url.URL(**POSTGRES)
+engine = engine.create_engine(postgres_url, echo=True)
 Session = sessionmaker(bind=engine)
 
 
