@@ -16,3 +16,4 @@ class TrackedTableMixin(object):
 class Crumb(TrackedTableMixin, BaseModel):
     __tablename__ = 'crumbs'
     id = sa.Column(sa.Integer, primary_key=True)
+    status = sa.Column(sa.Enum('active', 'ended', name='crumb_statuses'))
