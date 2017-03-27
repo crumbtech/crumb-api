@@ -4,6 +4,11 @@ from sqlalchemy.ext.declarative import declarative_base
 
 BaseModel = declarative_base()
 
+CRUMB_STATUSES = {
+    'ACTIVE': 'active',
+    'ENDED': 'ended',
+}
+
 
 class TrackedTableMixin(object):
     date_created = sa.Column(sa.DateTime, nullable=False,
@@ -16,4 +21,8 @@ class TrackedTableMixin(object):
 class Crumb(TrackedTableMixin, BaseModel):
     __tablename__ = 'crumbs'
     id = sa.Column(sa.Integer, primary_key=True)
-    status = sa.Column(sa.Enum('active', 'ended', name='crumb_statuses'))
+    status = sa.Column(sa.Enum(CRUMB_STATUSES['ACTIVE'],
+                               CRUMB_STATUSES['ENDED'],
+                               name='crumb_statuses'),
+                       nullable=False,
+                       default=CRUMB_STATUSES['ACTIVE'])

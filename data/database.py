@@ -4,7 +4,6 @@ from sqlalchemy import engine
 from sqlalchemy.orm import sessionmaker
 
 from data.config import POSTGRES
-from data.models import Crumb
 
 postgres_url = str(engine.url.URL(**POSTGRES))
 engine = engine.create_engine(postgres_url, echo=True)
@@ -25,6 +24,7 @@ def session_manager():
 
 
 def seed_database():
+    from data.models import Crumb, CRUMB_STATUSES
     with session_manager() as session:
         for num in range(0, 100):
-            session.add(Crumb())
+            session.add(Crumb(status=CRUMB_STATUSES['ACTIVE']))
