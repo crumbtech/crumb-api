@@ -3,22 +3,22 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 
-# append parent path so we access to the app
+# append parent path so we have access to the app
 import sys
 import os
 from pathlib import Path
 
 sys.path.append(str(Path(os.getcwd()).parent))
 
-from data.database import postgres_url  # noqa
-from data.models import Crumb  # noqa
+from crumb_api.database import postgres_url  # noqa
+from crumb_api.models import Crumb  # noqa
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 config.set_main_option('sqlalchemy.url', postgres_url)
-
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

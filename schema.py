@@ -1,7 +1,7 @@
 import graphene
 
-from data.database import session_manager
-import data.models as models
+from database import session_manager
+import models
 
 
 class Crumb(graphene.ObjectType):
