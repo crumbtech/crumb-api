@@ -1,11 +1,22 @@
+import os
 from contextlib import contextmanager
 
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
 
 import src.config as config
+cfg = config.config_for_env
 
-postgres_url = str(sa.engine.url.URL(**config.POSTGRES))
+POSTGRES = {
+    'database': cfg.POSTGRES_NAME,
+    'drivername': 'postgres',
+    'host': cfg.POSTGRES_HOST,
+    'port': cfg.POSTGRES_PORT,
+    'username': cfg.POSTGRES_USER,
+    'password': cfg.POSTGRES_PASS,
+}
+
+postgres_url = str(sa.engine.url.URL(**POSTGRES))
 engine = sa.engine.create_engine(postgres_url, echo=True)
 Session = orm.sessionmaker(bind=engine)
 
