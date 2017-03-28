@@ -3,7 +3,7 @@ from contextlib import contextmanager
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
 
-import crumb_api.config as config
+import src.config as config
 
 postgres_url = str(sa.engine.url.URL(**config.POSTGRES))
 engine = sa.engine.create_engine(postgres_url, echo=True)
@@ -24,7 +24,7 @@ def session_manager():
 
 
 def seed_database():
-    from models import Crumb, CRUMB_STATUSES
+    from src.models import Crumb, CRUMB_STATUSES
     with session_manager() as session:
         for _ in range(0, 5):
             session.add(Crumb(status=CRUMB_STATUSES['ACTIVE']))

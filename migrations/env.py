@@ -1,4 +1,6 @@
 from __future__ import with_statement
+import os
+import sys
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
@@ -6,14 +8,11 @@ from logging.config import fileConfig
 # append parent path so we have access to the app
 # when this file is run as a script from within
 # this directory
-import sys
-import os
-from pathlib import Path
+parent_dir = os.path.abspath(os.path.join(os.getcwd(), "."))
+sys.path.append(parent_dir)
 
-sys.path.append(str(Path(os.getcwd()).parent))
-
-from crumb_api.database import postgres_url  # noqa
-from crumb_api.models import Crumb  # noqa
+from src.database import postgres_url  # noqa
+from src.models import Crumb  # noqa
 
 
 # this is the Alembic Config object, which provides

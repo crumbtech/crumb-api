@@ -1,14 +1,11 @@
 from flask import Flask
 from flask_graphql import GraphQLView
 
-import crumb_api.schema as schema
+import src.schema as schema
 
-app = Flask(__name__)
+flask_app = Flask(__name__)
 
-app.add_url_rule('/graphql',
+flask_app.add_url_rule('/graphql',
                  view_func=GraphQLView.as_view('graphql',
                                                schema=schema.schema,
                                                graphiql=True))
-
-if __name__ == '__main__':
-    app.run()

@@ -1,7 +1,7 @@
 import graphene
 
-import crumb_api.database as db
-import crumb_api.models as models
+import src.database as db
+import src.models as models
 
 
 class Crumb(graphene.ObjectType):
