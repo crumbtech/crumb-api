@@ -1,4 +1,6 @@
 alembic==0.9.1
+Flask==0.12
+Flask-GraphQL==1.4.1
 graphene==1.2
 psycopg2==2.7.1
 SQLAlchemy==1.1.6

@@ -6,7 +6,7 @@ import data.models as models
 
 class Crumb(graphene.ObjectType):
     id = graphene.ID()
-    status = graphene.string()
+    status = graphene.Field(graphene.String)
 
 
 class Query(graphene.ObjectType):
