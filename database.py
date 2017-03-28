@@ -1,29 +1,13 @@
 from contextlib import contextmanager
 
-from sqlalchemy import engine
-from sqlalchemy.orm import sessionmaker
+import sqlalchemy as sa
+import sqlalchemy.orm as orm
 
-import os
+import crumb_api.config as config
 
-POSTGRES_NAME = os.environ.get('POSTGRES_NAME') or 'crumb_dev'
-POSTGRES_HOST = os.environ.get('POSTGRES_HOST') or 'localhost'
-POSTGRES_PORT = os.environ.get('POSTGRES_PORT') or '5432'
-POSTGRES_USER = os.environ.get('POSTGRES_USER') or 'postgres'
-POSTGRES_PASS = os.environ.get('POSTGRES_PASS') or 'postgres'
-
-POSTGRES = {
-    'database': POSTGRES_NAME,
-    'drivername': 'postgres',
-    'host': POSTGRES_HOST,
-    'port': POSTGRES_PORT,
-    'username': POSTGRES_USER,
-    'password': POSTGRES_PASS,
-}
-
-
-postgres_url = str(engine.url.URL(**POSTGRES))
-engine = engine.create_engine(postgres_url, echo=True)
-Session = sessionmaker(bind=engine)
+postgres_url = str(sa.engine.url.URL(**config.POSTGRES))
+engine = sa.engine.create_engine(postgres_url, echo=True)
+Session = orm.sessionmaker(bind=engine)
 
 
 @contextmanager

@@ -4,6 +4,8 @@ from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 
 # append parent path so we have access to the app
+# when this file is run as a script from within
+# this directory
 import sys
 import os
 from pathlib import Path

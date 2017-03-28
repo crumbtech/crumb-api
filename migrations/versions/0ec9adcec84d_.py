@@ -1,8 +1,8 @@
-"""create crumbs table
+"""empty message
 
-Revision ID: b8d87cc9a8c0
+Revision ID: 0ec9adcec84d
 Revises:
-Create Date: 2017-03-27 23:33:52.407631
+Create Date: 2017-03-27 23:49:49.607146
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b8d87cc9a8c0'
+revision = '0ec9adcec84d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,4 +30,4 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_table('crumbs')
+    pass
