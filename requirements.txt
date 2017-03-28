@@ -3,4 +3,5 @@ Flask==0.12
 Flask-GraphQL==1.4.1
 graphene==1.2
 psycopg2==2.7.1
+pytest==3.0.7
 SQLAlchemy==1.1.6
