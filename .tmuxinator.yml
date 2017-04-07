@@ -34,7 +34,7 @@ windows:
   - api-server:
     - python server.py
   - api-tests:
-    - ptw --runner 'pytest -q' --onfail 'reattach-to-user-namespace osascript -e "display notification \"TESTS FAILED\" with title \"crumb-api\" sound name \"Sosumi\""'
+    - ptw --runner 'pytest -q'
   - api-postgres: docker run -ti --rm --name crumb_postgres -e "POSTGRES_DB=crumb_dev" -p 5432:5432 postgres:alpine
   - api-psql: sleep 5 && docker run -ti --rm --name crumb_psql --link crumb_postgres:postgres postgres:alpine psql crumb_dev -h postgres -U postgres
   - api-shell:
