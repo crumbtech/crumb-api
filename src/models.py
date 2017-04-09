@@ -25,8 +25,7 @@ class User(TrackedTableMixin, BaseModel):
     id = sa.Column(sa.Integer, primary_key=True)
 
     def generate_auth_token(self):
-        jwt_payload = {'sub': self.id}
-        return lib.encode_jwt_token(jwt_payload)
+        return lib.encode_jwt_token_for_subject(self.id)
 
 
 class Crumb(TrackedTableMixin, BaseModel):
