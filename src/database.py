@@ -35,7 +35,8 @@ def session_manager():
 
 
 def seed_database():
-    from src.models import Crumb, CRUMB_STATUSES
+    from src.models import Crumb, CRUMB_STATUSES, User
     with session_manager() as session:
         for _ in range(0, 5):
             session.add(Crumb(status=CRUMB_STATUSES['ACTIVE']))
+            session.add(User())
