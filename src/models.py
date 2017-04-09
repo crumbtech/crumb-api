@@ -18,6 +18,11 @@ class TrackedTableMixin(object):
                               onupdate=dt.datetime.utcnow)
 
 
+class User(TrackedTableMixin, BaseModel):
+    __tablename__ = 'users'
+    id = sa.Column(sa.Integer, primary_key=True)
+
+
 class Crumb(TrackedTableMixin, BaseModel):
     __tablename__ = 'crumbs'
     id = sa.Column(sa.Integer, primary_key=True)
