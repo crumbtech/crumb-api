@@ -2,6 +2,8 @@ import datetime as dt
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
+import src.lib as lib
+
 BaseModel = declarative_base()
 
 CRUMB_STATUSES = {
@@ -21,6 +23,10 @@ class TrackedTableMixin(object):
 class User(TrackedTableMixin, BaseModel):
     __tablename__ = 'users'
     id = sa.Column(sa.Integer, primary_key=True)
+
+    def generate_auth_token(self):
+        jwt_payload = {'sub': self.id}
+        return lib.encode_jwt_token(jwt_payload)
 
 
 class Crumb(TrackedTableMixin, BaseModel):

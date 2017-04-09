@@ -9,6 +9,7 @@ class Config(object):
     POSTGRES_USER = 'postgres'
     POSTGRES_PASS = 'postgres'
     GRAPHIQL = True
+    JWT_SECRET = 'super secret random key'
 
 
 class TestConfig(Config):
@@ -25,7 +26,7 @@ class ProdConfig(Config):
     POSTGRES_USER = os.environ.get('POSTGRES_USER')
     POSTGRES_PASS = os.environ.get('POSTGRES_PASS')
     GRAPHIQL = False
-
+    JWT_SECRET = os.environ.get('JWT_SECRET')
 
 
 def get_config_for_env():
