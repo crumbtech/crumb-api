@@ -1,7 +1,7 @@
 import jwt
 
 import src.config as config
-cfg = config.config_for_env()
+cfg = config.config_for_env
 
 
 def encode_jwt_token(payload):
