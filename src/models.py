@@ -24,8 +24,8 @@ class TrackedTableMixin(object):
 
 class User(TrackedTableMixin, BaseModel):
     __tablename__ = 'users'
-    id = sa.Column(sa.Integer, primary_key=True, nullable=True)
-    phone_number = sa.Column(sa.Text, primary_key=True)
+    id = sa.Column(sa.Integer, primary_key=True)
+    phone_number = sa.Column(sa.Text, nullable=False)
     password = sa.Column(sa.Text, nullable=False)
 
     def __init__(self, **kwargs):

@@ -1,4 +1,4 @@
-from flask import Blueprint, make_response, jsonify
+from flask import Blueprint, make_response, jsonify, request
 
 import src.models as models
 import src.database as db
@@ -8,8 +8,10 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/register', methods=['POST'])
 def register():
-    post_data = request.get_json()
-    user = models.User()
+    post_data = request.form
+    user = models.User(
+        phone_number=post_data.get('phone_number'),
+        password=post_data.get('password'))
     with db.session_manager() as session:
         session.add(user)
         session.commit()
