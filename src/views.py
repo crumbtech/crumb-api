@@ -8,7 +8,7 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/register', methods=['POST'])
 def register():
-    # post_data = request.get_json()
+    post_data = request.get_json()
     user = models.User()
     with db.session_manager() as session:
         session.add(user)

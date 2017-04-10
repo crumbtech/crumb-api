@@ -25,19 +25,19 @@ class TrackedTableMixin(object):
 
 class User(TrackedTableMixin, BaseModel):
     __tablename__ = 'users'
-    id = sa.Column(sa.Integer, primary_key=True)
+    id = sa.Column(sa.Integer, primary_key=True, nullable=True)
     phone_number = sa.Column(sa.Text, primary_key=True)
     password = sa.Column(sa.Text, nullable=False)
 
     def __init__(self, **kwargs):
         self.phone_number = lib.normalize_phone_number(
                 kwargs.pop('phone_number'))
-        self.password = self.generate_hashed_password(kwargs.pop('password'))
+        self.password = self.hash_password(
+                kwargs.pop('password')).decode()
 
     @staticmethod
-    def generate_hashed_password(password):
-        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
-        return hashed_password.decode()
+    def hash_password(password):
+        return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
     def generate_auth_token(self):
         return lib.generate_jwt_token_for_subject(self.id)
