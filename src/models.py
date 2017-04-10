@@ -2,7 +2,6 @@ import datetime as dt
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import validates
-import phonenumbers
 import bcrypt
 
 import src.lib as lib
