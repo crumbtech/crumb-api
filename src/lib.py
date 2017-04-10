@@ -8,9 +8,10 @@ def encode_jwt_token(payload):
     return jwt.encode(payload, cfg.JWT_SECRET, algorithm='HS256')
 
 
-def encode_jwt_token_for_subject(sub):
+def generate_jwt_token_for_subject(sub):
     payload = {'sub': sub}
-    return encode_jwt_token(payload)
+    encoded_token = encode_jwt_token(payload)
+    return encoded_token.decode()
 
 
 def decode_jwt_token(token):

@@ -1,12 +1,13 @@
-from flask import Flask
-
-
 def create_app(config_object='src.config.config_for_env'):
+    from flask import Flask
     flask_app = Flask(__name__)
     flask_app.config.from_object(config_object)
 
     from flask_graphql import GraphQLView
     import src.schema as schema
+    import src.views as views
+
+    flask_app.register_blueprint(views.auth, url_prefix='/auth')
 
     graphiql_enabled = flask_app.config.get('GRAPHIQL')
 
@@ -15,4 +16,5 @@ def create_app(config_object='src.config.config_for_env'):
                                'graphql',
                                schema=schema.schema,
                                graphiql=graphiql_enabled))
+
     return flask_app
