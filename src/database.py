@@ -1,4 +1,3 @@
-import os
 from contextlib import contextmanager
 
 import sqlalchemy as sa
