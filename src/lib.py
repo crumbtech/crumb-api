@@ -1,4 +1,5 @@
 import jwt
+import phonenumbers
 
 import src.config as config
 cfg = config.config_for_env
@@ -16,3 +17,13 @@ def generate_jwt_token_for_subject(sub):
 
 def decode_jwt_token(token):
     return jwt.decode(token, cfg.JWT_SECRET)
+
+
+def normalize_phone_number(phone_number):
+    parsed = phonenumbers.parse(phone_number)
+    normalized = phonenumbers.format_number(
+        parsed,
+        phonenumbers.PhoneNumberFormat.E164,
+    )
+
+    return normalized

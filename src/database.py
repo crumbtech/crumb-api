@@ -38,4 +38,4 @@ def seed_database():
     with session_manager() as session:
         for _ in range(0, 5):
             session.add(Crumb(status=CRUMB_STATUSES['ACTIVE']))
-            session.add(User())
+            session.add(User(phone_number='+19876543', password='password'))

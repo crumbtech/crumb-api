@@ -1,6 +1,9 @@
 import datetime as dt
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import validates
+import phonenumbers
+import bcrypt
 
 import src.lib as lib
 
@@ -23,6 +26,18 @@ class TrackedTableMixin(object):
 class User(TrackedTableMixin, BaseModel):
     __tablename__ = 'users'
     id = sa.Column(sa.Integer, primary_key=True)
+    phone_number = sa.Column(sa.Text, primary_key=True)
+    password = sa.Column(sa.Text, nullable=False)
+
+    def __init__(self, **kwargs):
+        self.phone_number = lib.normalize_phone_number(
+                kwargs.pop('phone_number'))
+        self.password = self.generate_hashed_password(kwargs.pop('password'))
+
+    @staticmethod
+    def generate_hashed_password(password):
+        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+        return hashed_password.decode()
 
     def generate_auth_token(self):
         return lib.generate_jwt_token_for_subject(self.id)
