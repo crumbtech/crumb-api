@@ -1,5 +1,3 @@
-import pytest
-
 import src.database as db
 import src.models as models
 

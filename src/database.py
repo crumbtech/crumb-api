@@ -16,7 +16,7 @@ POSTGRES = {
 }
 
 postgres_url = str(sa.engine.url.URL(**POSTGRES))
-engine = sa.engine.create_engine(postgres_url, echo=True)
+engine = sa.engine.create_engine(postgres_url)
 Session = orm.sessionmaker(bind=engine)
 
 
