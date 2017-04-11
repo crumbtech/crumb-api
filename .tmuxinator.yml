@@ -34,7 +34,12 @@ windows:
   - api-server:
     - python server.py
   - api-tests:
-    - ptw --runner 'pytest -q'
+    # run test database in the background on a separate port
+    - docker run -d --rm --name crumb_postgres_test -e "POSTGRES_DB=crumb_test" -p 5433:5432 postgres:alpine
+    # wait for database to start, apply migrations to test database
+    - sleep 5 && CRUMB_ENV=test alembic upgrade head
+    # run tests with test config
+    - CRUMB_ENV=test ptw --runner 'pytest -q'
   - api-postgres: docker run -ti --rm --name crumb_postgres -e "POSTGRES_DB=crumb_dev" -p 5432:5432 postgres:alpine
   - api-psql: sleep 5 && docker run -ti --rm --name crumb_psql --link crumb_postgres:postgres postgres:alpine psql crumb_dev -h postgres -U postgres
   - api-shell:
