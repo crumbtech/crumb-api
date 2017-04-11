@@ -2,6 +2,7 @@ from contextlib import contextmanager
 
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
+import faker
 
 import src.config as config
 cfg = config.config_for_env
@@ -35,7 +36,10 @@ def session_manager():
 
 def seed_database():
     from src.models import Crumb, CRUMB_STATUSES, User
+    fake = faker.Factory.create()
     with session_manager() as session:
         for _ in range(0, 5):
+            fake_number = '+1' + fake.phone_number()
             session.add(Crumb(status=CRUMB_STATUSES['ACTIVE']))
-            session.add(User(phone_number='+19876543', password='password'))
+            session.add(User(phone_number=fake_number,
+                             password='password'))
