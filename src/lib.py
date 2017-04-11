@@ -16,7 +16,10 @@ def generate_jwt_token_for_subject(sub):
 
 
 def decode_jwt_token(token):
-    return jwt.decode(token, cfg.JWT_SECRET)
+    try:
+        return jwt.decode(token, cfg.JWT_SECRET)
+    except jwt.exceptions.DecodeError:
+        raise ValueError('invalid token')
 
 
 def normalize_phone_number(phone_number):

@@ -37,6 +37,14 @@ class User(TrackedTableMixin, BaseModel):
     @staticmethod
     def hash_password(password):
         return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    @staticmethod
+    def decode_auth_token(token):
+        """ extracts user_id from jwt auth token
+        """
+        try:
+            return lib.decode_jwt_token(token)['sub']
+        except ValueError:
+            return None
 
     def generate_auth_token(self):
         return lib.generate_jwt_token_for_subject(self.id)

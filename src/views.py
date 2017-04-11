@@ -28,3 +28,6 @@ def register():
             return make_response(jsonify({
                 'auth_token': auth_token,
             })), 200
+@auth.route('/current-user', methods=['GET'])
+def get_current_user_from_auth_header():
+    return make_response(jsonify(g.current_user)), 200
