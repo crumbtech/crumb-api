@@ -27,16 +27,20 @@ class User(TrackedTableMixin, BaseModel):
     id = sa.Column(sa.Integer, primary_key=True)
     phone_number = sa.Column(sa.Text, nullable=False)
     password = sa.Column(sa.Text, nullable=False)
+    password_salt = sa.Column(sa.Text, nullable=False)
 
     def __init__(self, **kwargs):
         self.phone_number = lib.normalize_phone_number(
                 kwargs.pop('phone_number'))
+        password_salt = bcrypt.gensalt()
         self.password = self.hash_password(
-                kwargs.pop('password')).decode()
+                kwargs.pop('password'), password_salt).decode()
+        self.password_salt = password_salt
 
     @staticmethod
-    def hash_password(password):
-        return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    def hash_password(password, salt):
+        return bcrypt.hashpw(password.encode(), salt)
+
     @staticmethod
     def decode_auth_token(token):
         """ extracts user_id from jwt auth token

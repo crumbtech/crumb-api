@@ -1,10 +1,12 @@
+import bcrypt
+
 import src.database as db
 import src.models as models
 
 
 class TestUser:
     def test_hash_password(self):
-        hashed = models.User.hash_password('password')
+        hashed = models.User.hash_password('password', bcrypt.gensalt())
         assert type(hashed) == bytes
 
     def test_create_user(self):
