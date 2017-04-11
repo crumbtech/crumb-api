@@ -1,4 +1,3 @@
-import pytest
 import bcrypt
 
 import src.database as db
@@ -6,7 +5,7 @@ import src.models as models
 
 
 class TestUser:
-    user_dict = dict(phone_number='+12345678', password='test')
+    user_dict = dict(phone_number='+12345678910', password='test')
 
     def test_hash_password(self):
         """ successfully hashes password

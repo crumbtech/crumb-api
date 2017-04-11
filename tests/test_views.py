@@ -6,7 +6,7 @@ import src.models as models
 
 
 class TestAuthView:
-    user_dict = dict(phone_number='+12345678', password='test')
+    user_dict = dict(phone_number='+11234567890', password='test')
 
     def delete_existing_users(self):
         """ delete all records from users table
@@ -113,7 +113,7 @@ class TestAuthView:
             '/auth/login',
             data=json.dumps(dict(
                 password=self.user_dict['phone_number'],
-                phone_number='+19876543')),
+                phone_number='+19876543210')),
             content_type='application/json')
         data = json.loads(res.data.decode())
         assert res.status_code == 401

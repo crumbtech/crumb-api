@@ -29,4 +29,10 @@ def normalize_phone_number(phone_number):
         phonenumbers.PhoneNumberFormat.E164,
     )
 
+    length = len(normalized)
+    # possible length range of E164 formatted phone numbers
+    # international numbers can be longer than 10 digits
+    # plus sign + country code + ten digit number = 12 characters
+    assert length >= 12 and length <= 17
+
     return normalized
