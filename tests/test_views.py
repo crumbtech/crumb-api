@@ -65,3 +65,57 @@ class TestAuthView:
             headers=dict(Authorization='Bearer ' + auth_token))
         user_data = json.loads(res.data.decode())
         assert user_data['phone_number'] == self.user_dict['phone_number']
+
+    def test_login_with_valid_credentials(self):
+        self.delete_existing_users()
+        with db.session_manager() as session:
+            user = models.User(**self.user_dict)
+            session.add(user)
+            session.commit()
+        app = create_app()
+        client = app.test_client()
+        res = client.post(
+            '/auth/login',
+            data=json.dumps(self.user_dict),
+            content_type='application/json')
+        data = json.loads(res.data.decode())
+        assert res.status_code == 200
+        assert data['auth_token'] is not None
+
+    def test_login_with_invalid_password(self):
+        self.delete_existing_users()
+        with db.session_manager() as session:
+            user = models.User(**self.user_dict)
+            session.add(user)
+            session.commit()
+        app = create_app()
+        client = app.test_client()
+        res = client.post(
+            '/auth/login',
+            data=json.dumps(dict(
+                phone_number=self.user_dict['phone_number'],
+                password='invalid password')),
+            content_type='application/json')
+        data = json.loads(res.data.decode())
+        assert res.status_code == 401
+        assert data['status'] == 'invalid-password'
+        assert data.get('auth_token') is None
+
+    def test_login_with_invalid_phone(self):
+        self.delete_existing_users()
+        with db.session_manager() as session:
+            user = models.User(**self.user_dict)
+            session.add(user)
+            session.commit()
+        app = create_app()
+        client = app.test_client()
+        res = client.post(
+            '/auth/login',
+            data=json.dumps(dict(
+                password=self.user_dict['phone_number'],
+                phone_number='+19876543')),
+            content_type='application/json')
+        data = json.loads(res.data.decode())
+        assert res.status_code == 401
+        assert data['status'] == 'no-user-for-phone'
+        assert data.get('auth_token') is None

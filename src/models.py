@@ -35,7 +35,7 @@ class User(TrackedTableMixin, BaseModel):
         password_salt = bcrypt.gensalt()
         self.password = self.hash_password(
                 kwargs.pop('password'), password_salt).decode()
-        self.password_salt = password_salt
+        self.password_salt = password_salt.decode()
 
     @staticmethod
     def hash_password(password, salt):
@@ -49,6 +49,11 @@ class User(TrackedTableMixin, BaseModel):
             return lib.decode_jwt_token(token)['sub']
         except ValueError:
             return None
+
+    def verify_password(self, supplied_password):
+        computed = self.hash_password(supplied_password,
+                                      self.password_salt.encode())
+        return self.password.encode() == computed
 
     def generate_auth_token(self):
         return lib.generate_jwt_token_for_subject(self.id)
