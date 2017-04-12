@@ -33,7 +33,7 @@ class TestAuthView:
         res = self.register_user()
         data = json.loads(res.data.decode())
         assert res.status_code == 200
-        assert data['auth_token'] is not None
+        assert data.get('auth_token') is not None
 
     def test_register_with_existing_user(self):
         """ attempt to register a user that already exists. ensure we return a
@@ -45,6 +45,7 @@ class TestAuthView:
         res = self.register_user()
         data = json.loads(res.data.decode())
         assert res.status_code == 202
+        assert data['status'] == 'already-exists'
         assert data.get('auth_token') is None
 
     def test_request_with_auth_token(self):

@@ -22,7 +22,7 @@ def test_decode_jwt_token():
 
 
 def test_normalize_phone_number():
-    invalid_number = '+123'
+    invalid_number = '+1234567890'
     valid_number_a = '+1-234-567-8910'
     valid_number_b = '+1 234 567 8910'
 

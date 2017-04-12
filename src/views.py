@@ -18,7 +18,7 @@ def register():
             phone_number=normalized_phone).first()
         if existing:
             return make_response(jsonify({
-                'status': 'phone number already in use',
+                'status': 'already-exists',
             })), 202
         else:
             user = models.User(phone_number=phone_number, password=password)
