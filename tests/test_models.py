@@ -1,56 +1,50 @@
 import bcrypt
 import pytest
 import sqlalchemy
-import faker
 
 import src.models as models
 import src.database as db
-import src.lib as lib
 
 
-fake = faker.Factory.create()
-
-
-def test_hash_password():
+def test_hash_password(password):
     """ successfully hashes password
     """
-    hashed = models.User.hash_password('password', bcrypt.gensalt())
+    hashed = models.User.hash_password(password, bcrypt.gensalt())
     assert type(hashed) == bytes
 
 
-def test_verify_password():
+def test_verify_password(phone_number, password):
     """ correctly tests passwords against the hashed password in the database
     """
-    test_password = 'password'
-    user = models.User(phone_number='+12345678910', password=test_password)
+    user = models.User(phone_number=phone_number, password=password)
     with db.session_manager() as session:
         session.add(user)
         session.commit()
         assert user.verify_password('invalid password') is False
-        assert user.verify_password(test_password) is True
+        assert user.verify_password(password) is True
+        session.delete(user)
 
 
-def test_create_user():
+def test_create_user(normalized_phone_number, password):
     """ successfully creates a user record
     """
-    test_phone = lib.normalize_phone_number('+1' + fake.phone_number())
-    user = models.User(phone_number=test_phone, password='password1')
+    user = models.User(phone_number=normalized_phone_number, password=password)
     with db.session_manager() as session:
         session.add(user)
         session.commit()
         persisted_user = session.query(models.User).filter_by(
-            phone_number=test_phone).one()
+            phone_number=normalized_phone_number).one()
         assert isinstance(persisted_user.id, int) is True
         token = persisted_user.generate_auth_token()
         assert isinstance(token, str) is True
         session.delete(persisted_user)
 
 
-def test_create_duplicate_user():
+def test_create_duplicate_user(phone_number, password):
     """ the database should not let us insert duplicate phone numbers
     """
-    user1 = models.User(phone_number='+12345678910', password='password1')
-    user2 = models.User(phone_number='+12345678910', password='password2')
+    user1 = models.User(phone_number=phone_number, password=password)
+    user2 = models.User(phone_number=phone_number, password=password)
     with pytest.raises(sqlalchemy.exc.IntegrityError):
         with db.session_manager() as session:
             session.add(user1)

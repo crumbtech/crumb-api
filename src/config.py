@@ -16,7 +16,6 @@ class TestConfig(Config):
     TESTING = True
     POSTGRES_NAME = 'crumb_test'
     POSTGRES_PORT = '5433'
-    POSTGRES_USER = 'postgres'
     GRAPHIQL = False
 
 
