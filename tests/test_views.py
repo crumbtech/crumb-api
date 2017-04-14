@@ -1,4 +1,5 @@
 import json
+import pytest
 
 from src.app import create_app
 import src.database as db
@@ -14,11 +15,6 @@ def register_user(user_dict):
         '/auth/register',
         data=json.dumps(user_dict),
         content_type='application/json')
-    # lets go ahead and delete this user now that we have the response info
-    # we need so we don't muck up the test database
-    with db.session_manager() as session:
-        session.query(models.User).filter_by(
-            phone_number=user_dict['phone_number']).delete()
     return res
 
 
@@ -26,19 +22,29 @@ def test_register_with_new_user(user_dict):
     """ register a user that doesn't already exist
     """
     res = register_user(user_dict)
+    # lets go ahead and delete this user now that we have the response info
+    # we need so we don't muck up the test database
+    with db.session_manager() as session:
+        session.query(models.User).filter_by(
+            phone_number=user_dict['phone_number']).delete()
     data = json.loads(res.data.decode())
     assert res.status_code == 200
     assert data.get('auth_token') is not None
+    assert data.get('first_name') == user_dict['first_name']
+    assert data.get('last_name') == user_dict['last_name']
 
 
-def test_register_with_existing_user(user, password):
+def test_register_with_existing_user(user, user_dict):
     """ attempt to register a user that already exists. ensure we return a
     status code indicating the client needs to log in
     """
-    res = register_user({
-        'phone_number': user.phone_number,
-        'password': password,
-    })
+    res = register_user(user_dict)
+    # we don't need to delete the user created here by the request to the
+    # /auth/register endpoint because the it will be deleted in the
+    # pytest teardown of the user fixture pytest fixtures are only
+    # run once per test, so user_dict has the same info as the user
+    # instance because the user instance fixture depends on the
+    # user_dict fixture.
     data = json.loads(res.data.decode())
     assert res.status_code == 202
     assert data['status'] == 'already-exists'

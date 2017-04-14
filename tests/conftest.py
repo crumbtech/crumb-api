@@ -12,6 +12,16 @@ fake = faker.Factory.create()
 
 
 @pytest.fixture
+def first_name():
+    return fake.first_name()
+
+
+@pytest.fixture
+def last_name():
+    return fake.last_name()
+
+
+@pytest.fixture
 def password():
     return fake.password()
 
@@ -33,8 +43,10 @@ def test_client():
 
 
 @pytest.fixture
-def user_dict(phone_number, password):
+def user_dict(first_name, last_name, phone_number, password):
     return dict(
+        first_name=first_name,
+        last_name=last_name,
         phone_number=phone_number,
         password=password)
 

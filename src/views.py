@@ -10,6 +10,8 @@ auth = Blueprint('auth', __name__)
 @auth.route('/register', methods=['POST'])
 def register():
     post_data = request.get_json()
+    first_name = post_data.get('first_name')
+    last_name = post_data.get('last_name')
     phone_number = post_data.get('phone_number')
     password = post_data.get('password')
     normalized_phone = lib.normalize_phone_number(phone_number)
@@ -21,12 +23,15 @@ def register():
                 'status': 'already-exists',
             })), 202
         else:
-            user = models.User(phone_number=phone_number, password=password)
+            user = models.User(first_name=first_name, last_name=last_name,
+                               phone_number=phone_number, password=password)
             session.add(user)
             session.commit()
             auth_token = user.generate_auth_token()
             return make_response(jsonify({
                 'auth_token': auth_token,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
             })), 200
 
 

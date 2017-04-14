@@ -25,11 +25,15 @@ class TrackedTableMixin(object):
 class User(TrackedTableMixin, BaseModel):
     __tablename__ = 'users'
     id = sa.Column(sa.Integer, primary_key=True)
+    first_name = sa.Column(sa.Text, nullable=False)
+    last_name = sa.Column(sa.Text, nullable=True)
     phone_number = sa.Column(sa.Text, unique=True, nullable=False)
     password = sa.Column(sa.Text, nullable=False)
     password_salt = sa.Column(sa.Text, nullable=False)
 
     def __init__(self, **kwargs):
+        self.first_name = kwargs.pop('first_name')
+        self.last_name = kwargs.pop('last_name')
         self.phone_number = lib.normalize_phone_number(
                 kwargs.pop('phone_number'))
         password_salt = bcrypt.gensalt()
