@@ -43,5 +43,4 @@ def seed_database():
             session.add(Crumb(status=CRUMB_STATUSES['ACTIVE']))
             session.add(User(first_name=fake.first_name(),
                              last_name=fake.last_name(),
-                             phone_number=fake_number,
-                             password='password'))
+                             phone_number=fake_number))

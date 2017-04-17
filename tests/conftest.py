@@ -22,11 +22,6 @@ def last_name():
 
 
 @pytest.fixture
-def password():
-    return fake.password()
-
-
-@pytest.fixture
 def phone_number():
     return '+1' + str(random.randint(1000000000, 9999999999))
 
@@ -43,12 +38,11 @@ def test_client():
 
 
 @pytest.fixture
-def user_dict(first_name, last_name, phone_number, password):
+def user_dict(first_name, last_name, phone_number):
     return dict(
         first_name=first_name,
         last_name=last_name,
-        phone_number=phone_number,
-        password=password)
+        phone_number=phone_number)
 
 
 @pytest.fixture

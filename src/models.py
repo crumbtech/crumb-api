@@ -1,8 +1,6 @@
 import datetime as dt
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import validates
-import bcrypt
 
 import src.lib as lib
 
@@ -28,22 +26,12 @@ class User(TrackedTableMixin, BaseModel):
     first_name = sa.Column(sa.Text, nullable=False)
     last_name = sa.Column(sa.Text, nullable=True)
     phone_number = sa.Column(sa.Text, unique=True, nullable=False)
-    password = sa.Column(sa.Text, nullable=False)
-    password_salt = sa.Column(sa.Text, nullable=False)
 
     def __init__(self, **kwargs):
         self.first_name = kwargs.pop('first_name')
         self.last_name = kwargs.pop('last_name')
         self.phone_number = lib.normalize_phone_number(
                 kwargs.pop('phone_number'))
-        password_salt = bcrypt.gensalt()
-        self.password = self.hash_password(
-                kwargs.pop('password'), password_salt).decode()
-        self.password_salt = password_salt.decode()
-
-    @staticmethod
-    def hash_password(password, salt):
-        return bcrypt.hashpw(password.encode(), salt)
 
     @staticmethod
     def decode_auth_token(token):
@@ -53,11 +41,6 @@ class User(TrackedTableMixin, BaseModel):
             return lib.decode_jwt_token(token)['sub']
         except ValueError:
             return None
-
-    def verify_password(self, supplied_password):
-        computed = self.hash_password(supplied_password,
-                                      self.password_salt.encode())
-        return self.password.encode() == computed
 
     def generate_auth_token(self):
         return lib.generate_jwt_token_for_subject(self.id)

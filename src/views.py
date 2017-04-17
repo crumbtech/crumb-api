@@ -13,7 +13,6 @@ def register():
     first_name = post_data.get('first_name')
     last_name = post_data.get('last_name')
     phone_number = post_data.get('phone_number')
-    password = post_data.get('password')
     normalized_phone = lib.normalize_phone_number(phone_number)
     with db.session_manager() as session:
         existing = session.query(models.User).filter_by(
@@ -24,7 +23,7 @@ def register():
             })), 202
         else:
             user = models.User(first_name=first_name, last_name=last_name,
-                               phone_number=phone_number, password=password)
+                               phone_number=phone_number)
             session.add(user)
             session.commit()
             auth_token = user.generate_auth_token()
@@ -39,21 +38,15 @@ def register():
 def login():
     post_data = request.get_json()
     phone_number = post_data.get('phone_number')
-    password = post_data.get('password')
     normalized_phone = lib.normalize_phone_number(phone_number)
     with db.session_manager() as session:
         existing = session.query(models.User).filter_by(
             phone_number=normalized_phone).first()
         if existing:
-            if existing.verify_password(password):
-                auth_token = existing.generate_auth_token()
-                return make_response(jsonify({
-                    'auth_token': auth_token,
-                })), 200
-            else:
-                return make_response(jsonify({
-                    'status': 'invalid-password',
-                })), 401
+            auth_token = existing.generate_auth_token()
+            return make_response(jsonify({
+                'auth_token': auth_token,
+            })), 200
 
         else:
             return make_response(jsonify({

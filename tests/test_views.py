@@ -77,19 +77,6 @@ def test_login_with_valid_credentials(test_client, user_dict):
     assert data['auth_token'] is not None
 
 
-def test_login_with_invalid_password(test_client, user):
-    res = test_client.post(
-        '/auth/login',
-        data=json.dumps(dict(
-            phone_number=user.phone_number,
-            password='invalid password')),
-        content_type='application/json')
-    data = json.loads(res.data.decode())
-    assert res.status_code == 401
-    assert data['status'] == 'invalid-password'
-    assert data.get('auth_token') is None
-
-
 def test_login_with_invalid_phone(test_client, user_dict):
     with db.session_manager() as session:
         user = models.User(**user_dict)
@@ -99,7 +86,6 @@ def test_login_with_invalid_phone(test_client, user_dict):
         res = test_client.post(
             '/auth/login',
             data=json.dumps(dict(
-                password=user_dict['password'],
                 phone_number='+19876543210')),
             content_type='application/json')
         data = json.loads(res.data.decode())
