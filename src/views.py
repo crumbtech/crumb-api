@@ -30,7 +30,7 @@ def register():
             return make_response(jsonify({
                 'first_name': user.first_name,
                 'last_name': user.last_name,
-                'user_id': user.id,
+                'user_id': str(user.id),
             })), 200
 
 
@@ -47,7 +47,7 @@ def login():
             return make_response(jsonify({
                 'first_name': existing.first_name,
                 'last_name': existing.last_name,
-                'user_id': existing.id,
+                'user_id': str(existing.id),
             })), 200
 
         else:
