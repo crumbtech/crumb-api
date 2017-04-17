@@ -1,3 +1,4 @@
+import sys
 import random
 import datetime as dt
 
@@ -5,6 +6,8 @@ import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
 import src.lib as lib
+import src.config as config
+cfg = config.config_for_env
 
 BaseModel = declarative_base()
 
@@ -52,6 +55,15 @@ class User(TrackedTableMixin, BaseModel):
     def generate_auth_token(self):
         assert self.phone_number_confirmed is True
         return lib.generate_jwt_token_for_subject(self.id)
+
+    def send_confirmation_code(self):
+        if cfg.CRUMB_ENV == 'prod':
+            # send code in SMS message
+            pass
+        else:
+            print("CONFIRMATION CODE: {}".format(self.confirmation_code), file=sys.stderr)
+            # output to to server log
+            pass
 
     def check_confirmation_code(self, confirmation_code):
         return self.confirmation_code == confirmation_code

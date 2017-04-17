@@ -26,6 +26,7 @@ def register():
                                phone_number=phone_number)
             session.add(user)
             session.commit()
+            user.send_confirmation_code()
             return make_response(jsonify({
                 'first_name': user.first_name,
                 'last_name': user.last_name,
@@ -42,6 +43,7 @@ def login():
         existing = session.query(models.User).filter_by(
             phone_number=normalized_phone).first()
         if existing:
+            existing.send_confirmation_code()
             return make_response(jsonify({
                 'first_name': existing.first_name,
                 'last_name': existing.last_name,
@@ -60,7 +62,7 @@ def confirm():
     user_id = post_data.get('user_id')
     confirmation_code = post_data.get('confirmation_code')
     with db.session_manager() as session:
-        user = session.query(models.User).get(user_id)
+        user = session.query(models.User).filter_by(id=user_id).one()
         user.confirm_phone_number_with_code(confirmation_code)
         session.add(user)
         session.commit()

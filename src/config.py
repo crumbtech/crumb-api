@@ -2,6 +2,7 @@ import os
 
 
 class Config(object):
+    CRUMB_ENV = os.environ.get('CRUMB_ENV')
     DEBUG = True
     POSTGRES_NAME = 'crumb_dev'
     POSTGRES_HOST = 'localhost'
