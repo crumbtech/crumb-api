@@ -29,7 +29,8 @@ def test_register_with_new_user(user_dict):
             phone_number=user_dict['phone_number']).delete()
     data = json.loads(res.data.decode())
     assert res.status_code == 200
-    assert data.get('auth_token') is not None
+    assert data.get('auth_token') is None
+    assert data.get('user_id') is not None
     assert data.get('first_name') == user_dict['first_name']
     assert data.get('last_name') == user_dict['last_name']
 
@@ -51,17 +52,17 @@ def test_register_with_existing_user(user, user_dict):
     assert data.get('auth_token') is None
 
 
-def test_request_with_auth_token(test_client, user):
+def test_request_with_auth_token(test_client, confirmed_user):
     """ make a request to the server with an auth token. ensure that the
     server is able to decode the auth token and fetch the correct user
     from the database
     """
-    auth_token = user.generate_auth_token()
+    auth_token = confirmed_user.generate_auth_token()
     res = test_client.get(
         '/auth/current-user',
         headers=dict(Authorization='Bearer ' + auth_token))
     user_data = json.loads(res.data.decode())
-    assert user_data['phone_number'] == user.phone_number
+    assert user_data['id'] == confirmed_user.id
 
 
 def test_login_with_valid_credentials(test_client, user_dict):
@@ -74,24 +75,45 @@ def test_login_with_valid_credentials(test_client, user_dict):
         content_type='application/json')
     data = json.loads(res.data.decode())
     assert res.status_code == 200
-    assert data['auth_token'] is not None
+    assert data.get('auth_token') is None
+    assert data['user_id'] is not None
 
 
-def test_login_with_invalid_phone(test_client, user_dict):
-    with db.session_manager() as session:
-        user = models.User(**user_dict)
-        session.add(user)
-        session.commit()
+def test_login_with_invalid_phone(test_client, user):
+    res = test_client.post(
+        '/auth/login',
+        data=json.dumps(dict(
+            phone_number='+19876543210')),
+        content_type='application/json')
+    data = json.loads(res.data.decode())
 
-        res = test_client.post(
-            '/auth/login',
-            data=json.dumps(dict(
-                phone_number='+19876543210')),
-            content_type='application/json')
-        data = json.loads(res.data.decode())
+    assert res.status_code == 401
+    assert data['status'] == 'no-user-for-phone'
+    assert data.get('auth_token') is None
 
-        assert res.status_code == 401
-        assert data['status'] == 'no-user-for-phone'
-        assert data.get('auth_token') is None
 
-        session.delete(user)
+def test_confirm_user_with_valid_code(test_client, user):
+    res = test_client.post(
+        '/auth/confirm',
+        data=json.dumps(dict(
+            user_id=user.id,
+            confirmation_code=user.confirmation_code)),
+        content_type='application/json')
+    data = json.loads(res.data.decode())
+
+    assert res.status_code == 200
+    assert data.get('auth_token') is not None
+
+
+def test_confirm_user_with_invalid_code(test_client, user):
+    res = test_client.post(
+        '/auth/confirm',
+        data=json.dumps(dict(
+            user_id=user.id,
+            confirmation_code='invalid code')),
+        content_type='application/json')
+    data = json.loads(res.data.decode())
+
+    assert res.status_code == 401
+    assert data.get('auth_token') is None
+    assert data.get('status') == 'invalid-code'

@@ -20,11 +20,15 @@ def create_app(config_object='src.config.config_for_env'):
         user_id = models.User.decode_auth_token(auth_token)
         if user_id:
             with db.session_manager() as session:
-                user = session.query(models.User).filter_by(id=user_id).one()
-                g.current_user = dict(
-                    id=user.id,
-                    phone_number=user.phone_number,
-                )
+                user = session.query(models.User).get(user_id)
+                if user.phone_number_confirmed:
+                    g.current_user = dict(
+                        id=user.id,
+                        first_name=user.first_name,
+                        last_name=user.last_name,
+                    )
+                else:
+                    g.current_user = None
 
     flask_app.register_blueprint(views.auth, url_prefix='/auth')
 

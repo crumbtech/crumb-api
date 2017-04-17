@@ -35,7 +35,7 @@ class User(TrackedTableMixin, BaseModel):
     def __init__(self, **kwargs):
         self.first_name = kwargs.pop('first_name')
         self.last_name = kwargs.pop('last_name')
-        self.confirmed = False
+        self.phone_number_confirmed = False
         self.confirmation_code = str(random.randint(10000, 99999))
         self.phone_number = lib.normalize_phone_number(
             kwargs.pop('phone_number'))
@@ -50,15 +50,16 @@ class User(TrackedTableMixin, BaseModel):
             return None
 
     def generate_auth_token(self):
+        assert self.phone_number_confirmed is True
         return lib.generate_jwt_token_for_subject(self.id)
 
     def check_confirmation_code(self, confirmation_code):
         return self.confirmation_code == confirmation_code
 
     def confirm_phone_number_with_code(self, confirmation_code):
-        self.confirmed = False
+        self.phone_number_confirmed = False
         if self.check_confirmation_code(confirmation_code):
-            self.confirmed = True
+            self.phone_number_confirmed = True
 
 
 class Crumb(TrackedTableMixin, BaseModel):

@@ -16,8 +16,6 @@ def test_create_user(user_dict):
         persisted_user = session.query(models.User).filter_by(
             phone_number=user_dict['phone_number']).one()
         assert isinstance(persisted_user.id, int) is True
-        token = persisted_user.generate_auth_token()
-        assert isinstance(token, str) is True
         session.delete(persisted_user)
 
 
@@ -37,7 +35,7 @@ def test_create_duplicate_user(user_dict):
 
 
 def test_user_confirmed_defaults_to_false(user):
-    assert user.confirmed is False
+    assert user.phone_number_confirmed is False
 
 
 def test_check_confirmation_code(user):
@@ -49,6 +47,12 @@ def test_check_confirmation_code(user):
 def test_confirm_phone_number_with_code(user):
     confirmation_code = user.confirmation_code
     user.confirm_phone_number_with_code(confirmation_code)
-    assert user.confirmed is True
+    assert user.phone_number_confirmed is True
     user.confirm_phone_number_with_code('invalid code')
-    assert user.confirmed is False
+    assert user.phone_number_confirmed is False
+
+
+def test_unconfirmed_user_cannot_generate_auth_token(user):
+    assert user.phone_number_confirmed is False
+    with pytest.raises(AssertionError):
+        user.generate_auth_token()

@@ -53,3 +53,17 @@ def user(user_dict):
         session.commit()
         yield user_instance
         session.delete(user_instance)
+
+
+@pytest.fixture
+def confirmed_user(user_dict):
+    user_instance = models.User(**user_dict)
+    with db.session_manager() as session:
+        session.add(user_instance)
+        session.commit()
+        code = user_instance.confirmation_code
+        user_instance.confirm_phone_number_with_code(code)
+        session.add(user_instance)
+        session.commit()
+        yield user_instance
+        session.delete(user_instance)

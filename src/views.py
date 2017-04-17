@@ -26,11 +26,10 @@ def register():
                                phone_number=phone_number)
             session.add(user)
             session.commit()
-            auth_token = user.generate_auth_token()
             return make_response(jsonify({
-                'auth_token': auth_token,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
+                'user_id': user.id,
             })), 200
 
 
@@ -43,14 +42,35 @@ def login():
         existing = session.query(models.User).filter_by(
             phone_number=normalized_phone).first()
         if existing:
-            auth_token = existing.generate_auth_token()
             return make_response(jsonify({
-                'auth_token': auth_token,
+                'first_name': existing.first_name,
+                'last_name': existing.last_name,
+                'user_id': existing.id,
             })), 200
 
         else:
             return make_response(jsonify({
                 'status': 'no-user-for-phone',
+            })), 401
+
+
+@auth.route('/confirm', methods=['POST'])
+def confirm():
+    post_data = request.get_json()
+    user_id = post_data.get('user_id')
+    confirmation_code = post_data.get('confirmation_code')
+    with db.session_manager() as session:
+        user = session.query(models.User).get(user_id)
+        user.confirm_phone_number_with_code(confirmation_code)
+        session.add(user)
+        session.commit()
+        if user.phone_number_confirmed:
+            return make_response(jsonify({
+                'auth_token': user.generate_auth_token(),
+            })), 200
+        else:
+            return make_response(jsonify({
+                'status': 'invalid-code',
             })), 401
 
 
