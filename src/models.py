@@ -1,4 +1,6 @@
+import random
 import datetime as dt
+
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -24,14 +26,19 @@ class User(TrackedTableMixin, BaseModel):
     __tablename__ = 'users'
     id = sa.Column(sa.Integer, primary_key=True)
     first_name = sa.Column(sa.Text, nullable=False)
-    last_name = sa.Column(sa.Text, nullable=True)
+    last_name = sa.Column(sa.Text, nullable=False)
+    confirmation_code = sa.Column(sa.Text, nullable=False)
+    phone_number_confirmed = sa.Column(sa.Boolean, nullable=False,
+                                       default=False)
     phone_number = sa.Column(sa.Text, unique=True, nullable=False)
 
     def __init__(self, **kwargs):
         self.first_name = kwargs.pop('first_name')
         self.last_name = kwargs.pop('last_name')
+        self.confirmed = False
+        self.confirmation_code = str(random.randint(10000, 99999))
         self.phone_number = lib.normalize_phone_number(
-                kwargs.pop('phone_number'))
+            kwargs.pop('phone_number'))
 
     @staticmethod
     def decode_auth_token(token):
@@ -44,6 +51,14 @@ class User(TrackedTableMixin, BaseModel):
 
     def generate_auth_token(self):
         return lib.generate_jwt_token_for_subject(self.id)
+
+    def check_confirmation_code(self, confirmation_code):
+        return self.confirmation_code == confirmation_code
+
+    def confirm_phone_number_with_code(self, confirmation_code):
+        self.confirmed = False
+        if self.check_confirmation_code(confirmation_code):
+            self.confirmed = True
 
 
 class Crumb(TrackedTableMixin, BaseModel):

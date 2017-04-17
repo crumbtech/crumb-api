@@ -34,3 +34,21 @@ def test_create_duplicate_user(user_dict):
             session.commit()
             session.delete(user1)
             session.delete(user2)
+
+
+def test_user_confirmed_defaults_to_false(user):
+    assert user.confirmed is False
+
+
+def test_check_confirmation_code(user):
+    confirmation_code = user.confirmation_code
+    assert user.check_confirmation_code(confirmation_code) is True
+    assert user.check_confirmation_code('invalid code') is False
+
+
+def test_confirm_phone_number_with_code(user):
+    confirmation_code = user.confirmation_code
+    user.confirm_phone_number_with_code(confirmation_code)
+    assert user.confirmed is True
+    user.confirm_phone_number_with_code('invalid code')
+    assert user.confirmed is False
