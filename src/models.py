@@ -7,7 +7,6 @@ from sqlalchemy.ext.declarative import declarative_base
 
 import src.lib as lib
 import src.config as config
-cfg = config.config_for_env
 
 BaseModel = declarative_base()
 
@@ -44,7 +43,7 @@ class User(TrackedTableMixin, BaseModel):
             kwargs.pop('phone_number'))
 
     @staticmethod
-    def decode_auth_token(token):
+    def decode_user_id_from_auth_token(token):
         """ extracts user_id from jwt auth token
         """
         try:
@@ -57,12 +56,13 @@ class User(TrackedTableMixin, BaseModel):
         return lib.generate_jwt_token_for_subject(self.id)
 
     def send_confirmation_code(self):
-        if cfg.CRUMB_ENV == 'prod':
+        if config.for_env.CRUMB_ENV == 'prod':
             # send code in SMS message
             pass
         else:
-            print("CONFIRMATION CODE: {}".format(self.confirmation_code), file=sys.stderr)
-            # output to to server log
+            # output to to server log when in dev environment
+            print("CONFIRMATION CODE: {}".format(self.confirmation_code),
+                  file=sys.stderr)
             pass
 
     def check_confirmation_code(self, confirmation_code):

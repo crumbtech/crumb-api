@@ -2,11 +2,10 @@ import jwt
 import phonenumbers
 
 import src.config as config
-cfg = config.config_for_env
 
 
 def encode_jwt_token(payload):
-    return jwt.encode(payload, cfg.JWT_SECRET, algorithm='HS256')
+    return jwt.encode(payload, config.for_env.JWT_SECRET, algorithm='HS256')
 
 
 def generate_jwt_token_for_subject(sub):
@@ -17,7 +16,7 @@ def generate_jwt_token_for_subject(sub):
 
 def decode_jwt_token(token):
     try:
-        return jwt.decode(token, cfg.JWT_SECRET)
+        return jwt.decode(token, config.for_env.JWT_SECRET)
     except jwt.exceptions.DecodeError:
         raise ValueError('invalid token')
 
@@ -30,7 +29,7 @@ def normalize_phone_number(phone_number):
     )
 
     length = len(normalized)
-    # possible length range of E164 formatted phone numbers
+    # possible length range of E164 formatted phone numbers.
     # international numbers can be longer than 10 digits
     # plus sign + country code + ten digit number = 12 characters
     assert length >= 12 and length <= 17

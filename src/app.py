@@ -1,4 +1,4 @@
-def create_app(config_object='src.config.config_for_env'):
+def create_app(config_object='src.config.for_env'):
     from flask import Flask, request, g
     flask_app = Flask(__name__)
     flask_app.config.from_object(config_object)
@@ -17,7 +17,7 @@ def create_app(config_object='src.config.config_for_env'):
             auth_token = auth_header.split(" ")[1]
         else:
             auth_token = ''
-        user_id = models.User.decode_auth_token(auth_token)
+        user_id = models.User.decode_user_id_from_auth_token(auth_token)
         if user_id:
             with db.session_manager() as session:
                 user = session.query(models.User).get(user_id)

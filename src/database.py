@@ -5,15 +5,14 @@ import sqlalchemy.orm as orm
 import faker
 
 import src.config as config
-cfg = config.config_for_env
 
 POSTGRES = {
-    'database': cfg.POSTGRES_NAME,
+    'database': config.for_env.POSTGRES_NAME,
     'drivername': 'postgres',
-    'host': cfg.POSTGRES_HOST,
-    'port': cfg.POSTGRES_PORT,
-    'username': cfg.POSTGRES_USER,
-    'password': cfg.POSTGRES_PASS,
+    'host': config.for_env.POSTGRES_HOST,
+    'port': config.for_env.POSTGRES_PORT,
+    'username': config.for_env.POSTGRES_USER,
+    'password': config.for_env.POSTGRES_PASS,
 }
 
 postgres_url = str(sa.engine.url.URL(**POSTGRES))
