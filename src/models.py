@@ -2,6 +2,7 @@ import sys
 import random
 import datetime as dt
 
+import flask
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -60,10 +61,9 @@ class User(TrackedTableMixin, BaseModel):
             # send code in SMS message
             pass
         else:
-            # output to to server log when in dev environment
-            print("CONFIRMATION CODE: {}".format(self.confirmation_code),
-                  file=sys.stderr)
-            pass
+            # output to server log when in dev environment
+            flask.current_app.logger.info("CONFIRMATION CODE: {}".format(
+                self.confirmation_code))
 
     def check_confirmation_code(self, confirmation_code):
         return self.confirmation_code == confirmation_code
