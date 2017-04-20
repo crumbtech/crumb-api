@@ -31,3 +31,8 @@ def test_normalize_phone_number():
 
     assert lib.normalize_phone_number(valid_number_a) == '+12345678910'
     assert lib.normalize_phone_number(valid_number_b) == '+12345678910'
+
+
+@pytest.mark.skip('todo')
+def test_send_sms_message():
+    pass
