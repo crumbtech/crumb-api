@@ -40,14 +40,14 @@ def login():
     phone_number = post_data.get('phone_number')
     normalized_phone = lib.normalize_phone_number(phone_number)
     with db.session_manager() as session:
-        existing = session.query(models.User).filter_by(
+        user = session.query(models.User).filter_by(
             phone_number=normalized_phone).first()
-        if existing:
-            existing.send_confirmation_code()
+        if user:
+            user.send_confirmation_code()
             return make_response(jsonify({
-                'first_name': existing.first_name,
-                'last_name': existing.last_name,
-                'user_id': str(existing.id),
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'user_id': str(user.id),
             })), 200
 
         else:

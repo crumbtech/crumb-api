@@ -1,13 +1,10 @@
-import sys
 import random
 import datetime as dt
 
-import flask
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
 import src.lib as lib
-import src.config as config
 
 BaseModel = declarative_base()
 
@@ -52,18 +49,14 @@ class User(TrackedTableMixin, BaseModel):
         except ValueError:
             return None
 
+    def send_confirmation_code(self):
+        lib.send_sms_message(self.phone_number,
+                             "Your Crumb confirmation code is {}".format(
+                                 self.confirmation_code))
+
     def generate_auth_token(self):
         assert self.phone_number_confirmed is True
         return lib.generate_jwt_token_for_subject(self.id)
-
-    def send_confirmation_code(self):
-        if config.for_env.CRUMB_ENV == 'prod':
-            # send code in SMS message
-            pass
-        else:
-            # output to server log when in dev environment
-            flask.current_app.logger.info("CONFIRMATION CODE: {}".format(
-                self.confirmation_code))
 
     def check_confirmation_code(self, confirmation_code):
         return self.confirmation_code == confirmation_code

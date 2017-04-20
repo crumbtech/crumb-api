@@ -1,3 +1,4 @@
+import flask
 import jwt
 import phonenumbers
 
@@ -35,3 +36,12 @@ def normalize_phone_number(phone_number):
     assert length >= 12 and length <= 17
 
     return normalized
+
+
+def send_sms_message(number, message):
+    if config.for_env.CRUMB_ENV == 'prod':
+        # send code in SMS message
+        pass
+    else:
+        # output to server log when in dev environment
+        flask.current_app.logger.info(message)
