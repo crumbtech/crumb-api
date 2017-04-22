@@ -1,6 +1,7 @@
 import flask
 import jwt
 import phonenumbers
+import boto3
 
 import src.config as config
 
@@ -39,9 +40,9 @@ def normalize_phone_number(phone_number):
 
 
 def send_sms_message(number, message):
-    if config.for_env.CRUMB_ENV == 'prod':
-        # send code in SMS message
-        pass
+    if config.for_env.SEND_SMS:
+        sns = boto3.client('sns')
+        sns.publish(PhoneNumber=number, Message=message)
     else:
-        # output to server log when in dev environment
+        # output to server log when sms is disabled
         flask.current_app.logger.info(message)

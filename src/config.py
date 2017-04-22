@@ -11,6 +11,7 @@ class Config(object):
     POSTGRES_PASS = 'postgres'
     GRAPHIQL = True
     JWT_SECRET = 'super secret random key'
+    SEND_SMS = False
 
 
 class TestConfig(Config):
@@ -18,6 +19,9 @@ class TestConfig(Config):
     POSTGRES_NAME = 'crumb_test'
     POSTGRES_PORT = '5433'
     GRAPHIQL = False
+    # never set this to True! we don't want our
+    # test suite sending texts to random people
+    SEND_SMS = False
 
 
 class ProdConfig(Config):
@@ -29,6 +33,7 @@ class ProdConfig(Config):
     POSTGRES_PASS = os.environ.get('POSTGRES_PASS')
     GRAPHIQL = False
     JWT_SECRET = os.environ.get('JWT_SECRET')
+    SEND_SMS = True
 
 
 def get_config_for_env():
