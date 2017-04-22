@@ -1,5 +1,4 @@
 import json
-import pytest
 
 from src.app import create_app
 import src.database as db
@@ -7,7 +6,7 @@ import src.models as models
 
 
 def register_user(user_dict):
-    """ make a request to the register endpoint to create a new user record
+    """ make a request to the register endpoint to create a new user
     """
     app = create_app()
     test_client = app.test_client()
@@ -36,8 +35,9 @@ def test_register_with_new_user(user_dict):
 
 
 def test_register_with_existing_user(user, user_dict):
-    """ attempt to register a user that already exists. ensure we return a
-    status code indicating the client needs to log in
+    """
+    attempt to register a user that already exists. ensure we return a
+    status code that indicates the client needs to log in
     """
     res = register_user(user_dict)
     # we don't need to delete the user created here by the request to the
@@ -53,7 +53,8 @@ def test_register_with_existing_user(user, user_dict):
 
 
 def test_request_with_auth_token(test_client, confirmed_user):
-    """ make a request to the server with an auth token. ensure that the
+    """
+    make a request to the server with an auth token. ensure that the
     server is able to decode the auth token and fetch the correct user
     from the database
     """
