@@ -75,3 +75,17 @@ class Crumb(TrackedTableMixin, BaseModel):
                                name='crumb_statuses'),
                        nullable=False,
                        default=CRUMB_STATUSES['ACTIVE'])
+
+    crumb_images = sa.orm.relationship('CrumbImage')
+
+
+class CrumbImage(TrackedTableMixin, BaseModel):
+    __tablename__ = 'crumb_images'
+    id = sa.Column(sa.Integer, primary_key=True)
+    crumb_id = sa.Column(sa.Integer, sa.ForeignKey('crumbs.id'),
+                         nullable=False)
+    user_id = sa.Column(sa.Integer, sa.ForeignKey('users.id'), nullable=False)
+    s3_url = sa.Column(sa.Text, nullable=False)
+
+    crumb = sa.orm.relationship('Crumb', back_populates='crumb_images')
+    user = sa.orm.relationship('User')

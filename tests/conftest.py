@@ -63,6 +63,29 @@ def confirmed_user(user_dict):
 
 
 @pytest.fixture
+def crumb_dict():
+    return dict()
+
+
+@pytest.fixture
+def crumb(crumb_dict):
+    crumb_instance = models.Crumb(**crumb_dict)
+    with db.session_manager() as session:
+        session.add(crumb_instance)
+        session.commit()
+        yield crumb_instance
+        session.delete(crumb_instance)
+
+
+@pytest.fixture
+def crumb_image_dict(user, crumb):
+    return dict(
+        user_id=user.id,
+        crumb_id=crumb.id,
+        s3_url=fake.image_url())
+
+
+@pytest.fixture
 def test_client():
     app = create_app()
     return app.test_client()

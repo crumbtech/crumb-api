@@ -1,4 +1,4 @@
-"""empty message
+""" adds confirmation code to users table
 
 Revision ID: 49cad5f3dfc0
 Revises: aeb737d22bc0

@@ -56,3 +56,29 @@ def test_unconfirmed_user_cannot_generate_auth_token(user):
     assert user.phone_number_confirmed is False
     with pytest.raises(AssertionError):
         user.generate_auth_token()
+
+
+def test_create_crumb(crumb_dict):
+    """ successfully creates a crumb record
+    """
+    crumb = models.Crumb(**crumb_dict)
+    with db.session_manager() as session:
+        session.add(crumb)
+        session.commit()
+        persisted_crumb = session.query(models.Crumb).first()
+        assert isinstance(persisted_crumb.id, int) is True
+        session.delete(persisted_crumb)
+
+
+def test_create_crumb_image(crumb_image_dict):
+    """ successfully creates a crumb image record
+    """
+    crumb_image = models.CrumbImage(**crumb_image_dict)
+    with db.session_manager() as session:
+        session.add(crumb_image)
+        session.commit()
+        persisted_crumb_image = session.query(models.CrumbImage).first()
+        assert isinstance(persisted_crumb_image.id, int) is True
+        assert persisted_crumb_image.user.id == crumb_image_dict['user_id']
+        assert persisted_crumb_image.crumb.id == crumb_image_dict['crumb_id']
+        session.delete(persisted_crumb_image)
