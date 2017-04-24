@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 
-from src.models.base import TrackedTableMixin, BaseModel
+from .base import TrackedTableMixin, BaseModel
 
 
 class CrumbImage(TrackedTableMixin, BaseModel):

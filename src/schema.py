@@ -1,7 +1,7 @@
 import graphene
 
 from src.database import db_session
-from src.models.crumb import Crumb as CrumbModel
+from src.models import Crumb as CrumbModel
 
 
 class Crumb(graphene.ObjectType):

@@ -1,7 +1,7 @@
 import random
 import sqlalchemy as sa
 
-from src.models.base import TrackedTableMixin, BaseModel
+from .base import TrackedTableMixin, BaseModel
 from src.lib import (normalize_phone_number, decode_jwt_token,
                      send_sms_message, generate_jwt_token_for_subject)
 
