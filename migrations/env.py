@@ -12,7 +12,7 @@ parent_dir = os.path.abspath(os.path.join(os.getcwd(), "."))
 sys.path.append(parent_dir)
 
 from src.database import postgres_url  # noqa
-from src.models import Crumb  # noqa
+from src.models.base import BaseModel  # noqa
 
 
 # this is the Alembic Config object, which provides
@@ -29,7 +29,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [Crumb.metadata]
+target_metadata = [BaseModel.metadata]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

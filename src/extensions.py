@@ -1,7 +1,7 @@
 from flask import request, g
 
-import src.models as models
-import src.database as db
+from src.models import User
+from src.database import db_session
 
 
 class CurrentUser(object):
@@ -14,10 +14,10 @@ class CurrentUser(object):
                 auth_token = auth_header.split(" ")[1]
             else:
                 auth_token = ''
-            user_id = models.User.decode_user_id_from_auth_token(auth_token)
+            user_id = User.decode_user_id_from_auth_token(auth_token)
             if user_id:
-                with db.session_manager() as session:
-                    user = session.query(models.User).get(user_id)
+                with db_session() as session:
+                    user = session.query(User).get(user_id)
                     if user.phone_number_confirmed:
                         g.current_user = dict(id=user.id,
                                               first_name=user.first_name,

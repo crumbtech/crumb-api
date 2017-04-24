@@ -47,4 +47,4 @@ def get_config_for_env():
     return configs[env]
 
 
-for_env = get_config_for_env()()
+config_for_env = get_config_for_env()()

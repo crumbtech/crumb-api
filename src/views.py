@@ -1,8 +1,8 @@
 from flask import Blueprint, make_response, jsonify, request, g
 
-import src.models as models
-import src.database as db
-import src.lib as lib
+from src.models import User
+from src.database import db_session
+from src.lib import normalize_phone_number
 
 auth = Blueprint('auth', __name__)
 
@@ -13,16 +13,16 @@ def register():
     first_name = post_data.get('first_name')
     last_name = post_data.get('last_name')
     phone_number = post_data.get('phone_number')
-    normalized_phone = lib.normalize_phone_number(phone_number)
-    with db.session_manager() as session:
-        existing = session.query(models.User).filter_by(
+    normalized_phone = normalize_phone_number(phone_number)
+    with db_session() as session:
+        existing = session.query(User).filter_by(
             phone_number=normalized_phone).first()
         if existing:
             return make_response(jsonify({
                 'status': 'already-exists',
             })), 202
         else:
-            user = models.User(first_name=first_name, last_name=last_name,
+            user = User(first_name=first_name, last_name=last_name,
                                phone_number=phone_number)
             session.add(user)
             session.commit()
@@ -38,9 +38,9 @@ def register():
 def login():
     post_data = request.get_json()
     phone_number = post_data.get('phone_number')
-    normalized_phone = lib.normalize_phone_number(phone_number)
-    with db.session_manager() as session:
-        user = session.query(models.User).filter_by(
+    normalized_phone = normalize_phone_number(phone_number)
+    with db_session() as session:
+        user = session.query(User).filter_by(
             phone_number=normalized_phone).first()
         if user:
             user.send_confirmation_code()
@@ -61,8 +61,8 @@ def confirm():
     post_data = request.get_json()
     user_id = post_data.get('user_id')
     confirmation_code = post_data.get('confirmation_code')
-    with db.session_manager() as session:
-        user = session.query(models.User).filter_by(id=user_id).one()
+    with db_session() as session:
+        user = session.query(User).filter_by(id=user_id).one()
         user.confirm_phone_number_with_code(confirmation_code)
         session.add(user)
         session.commit()

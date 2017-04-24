@@ -4,9 +4,9 @@ import pytest
 import faker
 
 from src.app import create_app
-import src.database as db
-import src.models as models
-import src.lib as lib
+from src.database import db_session
+from src.models import Crumb, User
+from src.lib import normalize_phone_number
 
 fake = faker.Factory.create()
 
@@ -28,7 +28,7 @@ def phone_number():
 
 @pytest.fixture
 def normalized_phone_number(phone_number):
-    return lib.normalize_phone_number(phone_number)
+    return normalize_phone_number(phone_number)
 
 
 @pytest.fixture
@@ -41,8 +41,8 @@ def user_dict(first_name, last_name, phone_number):
 
 @pytest.fixture
 def user(user_dict):
-    user_instance = models.User(**user_dict)
-    with db.session_manager() as session:
+    user_instance = User(**user_dict)
+    with db_session() as session:
         session.add(user_instance)
         session.commit()
         yield user_instance
@@ -51,8 +51,8 @@ def user(user_dict):
 
 @pytest.fixture
 def confirmed_user(user_dict):
-    user_instance = models.User(**user_dict)
-    with db.session_manager() as session:
+    user_instance = User(**user_dict)
+    with db_session() as session:
         session.add(user_instance)
         code = user_instance.confirmation_code
         user_instance.confirm_phone_number_with_code(code)
@@ -69,8 +69,8 @@ def crumb_dict():
 
 @pytest.fixture
 def crumb(crumb_dict):
-    crumb_instance = models.Crumb(**crumb_dict)
-    with db.session_manager() as session:
+    crumb_instance = Crumb(**crumb_dict)
+    with db_session() as session:
         session.add(crumb_instance)
         session.commit()
         yield crumb_instance

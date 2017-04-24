@@ -1,8 +1,8 @@
 import json
 
 from src.app import create_app
-import src.database as db
-import src.models as models
+from src.database import db_session
+from src.models import User
 
 
 def register_user(user_dict):
@@ -23,8 +23,8 @@ def test_register_with_new_user(user_dict):
     res = register_user(user_dict)
     # lets go ahead and delete this user now that we have the response info
     # we need so we don't muck up the test database
-    with db.session_manager() as session:
-        session.query(models.User).filter_by(
+    with db_session() as session:
+        session.query(User).filter_by(
             phone_number=user_dict['phone_number']).delete()
     data = json.loads(res.data.decode())
     assert res.status_code == 200
@@ -67,8 +67,8 @@ def test_request_with_auth_token(test_client, confirmed_user):
 
 
 def test_login_with_valid_credentials(test_client, user_dict):
-    user = models.User(**user_dict)
-    with db.session_manager() as session:
+    user = User(**user_dict)
+    with db_session() as session:
         session.add(user)
     res = test_client.post(
         '/auth/login',

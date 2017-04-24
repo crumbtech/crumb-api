@@ -4,15 +4,15 @@ import sqlalchemy as sa
 import sqlalchemy.orm as orm
 import faker
 
-import src.config as config
+from src.config import config_for_env as config
 
 POSTGRES = {
-    'database': config.for_env.POSTGRES_NAME,
+    'database': config.POSTGRES_NAME,
     'drivername': 'postgres',
-    'host': config.for_env.POSTGRES_HOST,
-    'port': config.for_env.POSTGRES_PORT,
-    'username': config.for_env.POSTGRES_USER,
-    'password': config.for_env.POSTGRES_PASS,
+    'host': config.POSTGRES_HOST,
+    'port': config.POSTGRES_PORT,
+    'username': config.POSTGRES_USER,
+    'password': config.POSTGRES_PASS,
 }
 
 postgres_url = str(sa.engine.url.URL(**POSTGRES))
@@ -21,7 +21,7 @@ Session = orm.sessionmaker(bind=engine)
 
 
 @contextmanager
-def session_manager():
+def db_session():
     session = Session()
     try:
         yield session
@@ -34,9 +34,10 @@ def session_manager():
 
 
 def seed_database():
-    from src.models import Crumb, CRUMB_STATUSES, User
+    from src.models.crumb import Crumb, CRUMB_STATUSES
+    from src.models.user import User
     fake = faker.Factory.create()
-    with session_manager() as session:
+    with db_session() as session:
         for _ in range(0, 5):
             fake_number = '+1' + fake.phone_number()
             session.add(Crumb(status=CRUMB_STATUSES['ACTIVE']))

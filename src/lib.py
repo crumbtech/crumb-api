@@ -3,11 +3,11 @@ import jwt
 import phonenumbers
 import boto3
 
-import src.config as config
+from src.config import config_for_env as config
 
 
 def encode_jwt_token(payload):
-    return jwt.encode(payload, config.for_env.JWT_SECRET, algorithm='HS256')
+    return jwt.encode(payload, config.JWT_SECRET, algorithm='HS256')
 
 
 def generate_jwt_token_for_subject(sub):
@@ -18,7 +18,7 @@ def generate_jwt_token_for_subject(sub):
 
 def decode_jwt_token(token):
     try:
-        return jwt.decode(token, config.for_env.JWT_SECRET)
+        return jwt.decode(token, config.JWT_SECRET)
     except jwt.exceptions.DecodeError:
         raise ValueError('invalid token')
 
@@ -40,7 +40,7 @@ def normalize_phone_number(phone_number):
 
 
 def send_sms_message(number, message):
-    if config.for_env.SEND_SMS:
+    if config.SEND_SMS:
         sns = boto3.client('sns')
         sns.publish(PhoneNumber=number, Message=message)
     else:

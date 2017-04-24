@@ -1,7 +1,7 @@
 import graphene
 
-import src.database as db
-import src.models as models
+from src.database import db_session
+from src.models.crumb import Crumb as CrumbModel
 
 
 class Crumb(graphene.ObjectType):
@@ -13,8 +13,8 @@ class Query(graphene.ObjectType):
     all_crumbs = graphene.Field(graphene.List(Crumb))
 
     def resolve_all_crumbs(self, args, context, info):
-        with db.session_manager() as session:
-            res = session.query(models.Crumb)
+        with db_session() as session:
+            res = session.query(CrumbModel)
             return [Crumb(id=instance.id, status=instance.status)
                     for instance in res]
 
