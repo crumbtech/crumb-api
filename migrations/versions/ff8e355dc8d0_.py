@@ -25,6 +25,14 @@ def upgrade():
                     sa.ForeignKeyConstraint(['crumb_id'], ['crumbs.id'], ),
                     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
                     sa.Column('s3_url', sa.Text(), nullable=False),
+                    sa.Column(
+                        'upload_status',
+                        sa.Enum(
+                            'uploading',
+                            'success',
+                            'error',
+                            name='crumb_image_upload_statuses'),
+                        nullable=False),
                     sa.Column('date_created', sa.DateTime(), nullable=False),
                     sa.Column('date_modified', sa.DateTime(), nullable=False))
 
