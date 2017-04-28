@@ -34,13 +34,22 @@ def db_session():
 
 
 def seed_database():
-    from src.models.crumb import Crumb, CRUMB_STATUSES
+    from src.models import Crumb, CrumbImage
+    from src.models.crumb import CRUMB_STATUSES
     from src.models.user import User
     fake = faker.Factory.create()
     with db_session() as session:
         for _ in range(0, 5):
             fake_number = '+1' + fake.phone_number()
-            session.add(Crumb(status=CRUMB_STATUSES['ACTIVE']))
-            session.add(User(first_name=fake.first_name(),
-                             last_name=fake.last_name(),
-                             phone_number=fake_number))
+            crumb = Crumb(status=CRUMB_STATUSES['ACTIVE'])
+            user = User(first_name=fake.first_name(),
+                        last_name=fake.last_name(),
+                        phone_number=fake_number)
+            session.add(crumb)
+            session.add(user)
+            session.commit()
+            crumb_image = CrumbImage(crumb_id=crumb.id,
+                                     s3_url=fake.image_url(),
+                                     user_id=user.id)
+            session.add(crumb_image)
+            session.commit()
