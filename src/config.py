@@ -12,6 +12,8 @@ class Config(object):
     GRAPHIQL = True
     JWT_SECRET = 'super secret random key'
     SEND_SMS = False
+    AWS_KEY_MOBILE_CLIENT = 'AKIAJAZBEQGYD5GCWVMA'
+    AWS_SECRET_MOBILE_CLIENT = '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'
 
 
 class TestConfig(Config):
