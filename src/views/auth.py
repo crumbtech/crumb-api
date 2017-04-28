@@ -23,7 +23,7 @@ def register():
             })), 202
         else:
             user = User(first_name=first_name, last_name=last_name,
-                               phone_number=phone_number)
+                        phone_number=phone_number)
             session.add(user)
             session.commit()
             user.send_confirmation_code()
@@ -79,3 +79,13 @@ def confirm():
 @auth.route('/current-user', methods=['GET'])
 def get_current_user_from_auth_header():
     return make_response(jsonify(g.current_user)), 200
+
+
+@auth.route('/s3-presigned-post-params', methods=['GET'])
+def get_s3_presigned_post_params():
+    if g.current_user:
+        return make_response(jsonify('hey')), 200
+    else:
+        return make_response(jsonify({
+            'status': 'authentication-required',
+        })), 401

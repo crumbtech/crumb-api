@@ -42,7 +42,7 @@ def test_register_with_existing_user(user, user_dict):
     res = register_user(user_dict)
     # we don't need to delete the user created here by the request to the
     # /auth/register endpoint because the it will be deleted in the
-    # pytest teardown of the user fixture pytest fixtures are only
+    # pytest teardown of the user fixture. pytest fixtures are only
     # run once per test, so user_dict has the same info as the user
     # instance because the user instance fixture depends on the
     # user_dict fixture.
@@ -118,3 +118,20 @@ def test_confirm_user_with_invalid_code(test_client, user):
     assert res.status_code == 401
     assert data.get('auth_token') is None
     assert data.get('status') == 'invalid-code'
+
+
+def test_get_s3_presigned_post_params_without_confirmed_user(test_client):
+    res = test_client.get('/auth/s3-presigned-post-params')
+    data = json.loads(res.data.decode())
+
+    assert res.status_code == 401
+    assert data.get('status') == 'authentication-required'
+
+
+def test_get_s3_presigned_post_params_with_confirmed_user(test_client,
+                                                          confirmed_user):
+    auth_token = confirmed_user.generate_auth_token()
+    res = test_client.get(
+        '/auth/s3-presigned-post-params',
+        headers=dict(Authorization='Bearer ' + auth_token))
+    assert res.status_code == 200
