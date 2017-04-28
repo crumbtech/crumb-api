@@ -1,4 +1,5 @@
-from graphene import ObjectType, ID, String, Field, List, Argument, Schema
+from graphene import (ObjectType, ID, String, Field, List, Argument, Schema,
+                      Mutation)
 
 from src.database import db_session
 from src.models import Crumb as CrumbModel
@@ -36,4 +37,29 @@ class Query(ObjectType):
                     for crumb_image in res]
 
 
-schema = Schema(query=Query)
+class CreateCrumbImage(Mutation):
+    class Input:
+        crumb_id = ID()
+        s3_url = String()
+
+    crumb_image = Field(CrumbImage)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        with db_session() as session:
+            crumb_image_instance = CrumbImageModel(user_id=1,
+                                                   s3_url=args['s3_url'],
+                                                   crumb_id=args['crumb_id'])
+            session.add(crumb_image_instance)
+            session.commit()
+            crumb_image = CrumbImage(s3_url=crumb_image_instance.s3_url,
+                                     id=crumb_image_instance.id)
+
+            return CreateCrumbImage(crumb_image=crumb_image)
+
+
+class Mutations(ObjectType):
+    create_crumb_image = CreateCrumbImage.Field()
+
+
+schema = Schema(query=Query, mutation=Mutations)
