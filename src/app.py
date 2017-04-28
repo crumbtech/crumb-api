@@ -5,7 +5,7 @@ def create_app(config_object='src.config.config_for_env'):
 
     from flask_graphql import GraphQLView
     from src.schema import schema
-    from src.views import auth
+    from src.views.auth import auth
     from src.extensions import CurrentUser
 
     current_user = CurrentUser()
