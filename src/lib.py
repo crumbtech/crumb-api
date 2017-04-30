@@ -59,13 +59,16 @@ def s3_client():
                         aws_secret_access_key=config.AWS_SECRET_ACCESS_KEY)
 
 
-def generate_presigned_image_upload_url(extension='.jpg'):
+def generate_presigned_image_upload_url(user_id, extension='.jpg'):
     """
     generate a presigned PUT url for s3 images bucket.
     create a random unique key name with extension for the new s3 object.
+    prepends a uuid with user_id to ensure uniqueness of s3 key name - this
+    is probably overkill but i don't want one user overwriting another's
+    images in the s3 bucket so i'm going to play it safe.
     """
     s3 = s3_client()
-    key_name = uuid.uuid4().hex + extension
+    key_name = "{}-{}{}".format(user_id, uuid.uuid4().hex, extension)
     return s3.generate_presigned_url(
         'put_object',
         HttpMethod='PUT',

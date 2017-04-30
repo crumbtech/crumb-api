@@ -48,9 +48,11 @@ class CreateCrumbImage(Mutation):
     @staticmethod
     def mutate(root, args, context, info):
         with db_session() as session:
-            crumb_image_instance = CrumbImageModel(user_id=g.current_user.id,
-                                                   s3_url=args['s3_url'],
-                                                   crumb_id=args['crumb_id'])
+            crumb_image_instance = CrumbImageModel(
+                user_id=g.current_user['id'],
+                s3_url=args['s3_url'],
+                crumb_id=args['crumb_id'])
+
             session.add(crumb_image_instance)
             session.commit()
             crumb_image = CrumbImage(s3_url=crumb_image_instance.s3_url,

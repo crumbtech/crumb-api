@@ -91,7 +91,9 @@ def get_presigned_image_upload_url():
     """
     if g.current_user:
         extension = request.args.get('extension', '.jpg')
-        presigned_url = generate_presigned_image_upload_url(extension)
+        presigned_url = generate_presigned_image_upload_url(
+                g.current_user['id'], extension=extension)
+
         return make_response(jsonify({
             'presigned_url': presigned_url,
             's3_url': urllib.parse.splitquery(presigned_url)[0],
