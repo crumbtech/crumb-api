@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+import random
 
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
@@ -40,7 +41,7 @@ def seed_database():
     fake = faker.Factory.create()
     with db_session() as session:
         for _ in range(0, 5):
-            fake_number = '+1' + fake.phone_number()
+            fake_number = '+1' + str(random.randint(1000000000, 9999999999))
             crumb = Crumb(status=CRUMB_STATUSES['ACTIVE'])
             user = User(first_name=fake.first_name(),
                         last_name=fake.last_name(),
