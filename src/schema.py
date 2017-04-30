@@ -1,3 +1,4 @@
+from flask import g
 from graphene import (ObjectType, ID, String, Field, List, Argument, Schema,
                       Mutation)
 
@@ -47,7 +48,7 @@ class CreateCrumbImage(Mutation):
     @staticmethod
     def mutate(root, args, context, info):
         with db_session() as session:
-            crumb_image_instance = CrumbImageModel(user_id=1,
+            crumb_image_instance = CrumbImageModel(user_id=g.current_user.id,
                                                    s3_url=args['s3_url'],
                                                    crumb_id=args['crumb_id'])
             session.add(crumb_image_instance)
