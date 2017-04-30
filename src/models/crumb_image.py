@@ -6,7 +6,7 @@ from .base import TrackedTableMixin, BaseModel
 UPLOAD_STATUSES = dict(
     UPLOADING='uploading',
     SUCCESS='success',
-    ERROR='error')
+    FAILED='failed')
 
 
 class CrumbImage(TrackedTableMixin, BaseModel):
@@ -18,7 +18,7 @@ class CrumbImage(TrackedTableMixin, BaseModel):
     s3_url = sa.Column(sa.Text, nullable=False)
     upload_status = sa.Column(sa.Enum(UPLOAD_STATUSES['UPLOADING'],
                                       UPLOAD_STATUSES['SUCCESS'],
-                                      UPLOAD_STATUSES['ERROR'],
+                                      UPLOAD_STATUSES['FAILED'],
                                       name='crumb_image_upload_statuses'),
                               nullable=False,
                               default=UPLOAD_STATUSES['UPLOADING'])

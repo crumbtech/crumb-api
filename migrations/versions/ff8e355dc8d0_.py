@@ -30,7 +30,7 @@ def upgrade():
                         sa.Enum(
                             'uploading',
                             'success',
-                            'error',
+                            'failed',
                             name='crumb_image_upload_statuses'),
                         nullable=False),
                     sa.Column('date_created', sa.DateTime(), nullable=False),
