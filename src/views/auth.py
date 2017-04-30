@@ -1,3 +1,5 @@
+import urllib
+
 from flask import Blueprint, make_response, jsonify, request, g, current_app
 
 from src.models import User
@@ -83,11 +85,16 @@ def get_current_user_from_auth_header():
 
 @auth.route('/presigned-image-upload-url', methods=['GET'])
 def get_presigned_image_upload_url():
+    """
+    returns a presigned url to be used by client to create an s3 object.
+    also returns the s3 url where that object can be accessed once created.
+    """
     if g.current_user:
         extension = request.args.get('extension', '.jpg')
-
+        presigned_url = generate_presigned_image_upload_url(extension)
         return make_response(jsonify({
-            'presigned_url': generate_presigned_image_upload_url(extension)
+            'presigned_url': presigned_url,
+            's3_url': urllib.parse.splitquery(presigned_url)[0],
         })), 200
     else:
         return make_response(jsonify({

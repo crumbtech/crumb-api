@@ -138,3 +138,4 @@ def test_get_presigned_image_upload_url_with_confirmed_user(test_client,
 
     assert res.status_code == 200
     assert data.get('presigned_url') is not None
+    assert data.get('s3_url') is not None
