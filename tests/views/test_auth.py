@@ -120,18 +120,21 @@ def test_confirm_user_with_invalid_code(test_client, user):
     assert data.get('status') == 'invalid-code'
 
 
-def test_get_s3_presigned_post_params_without_confirmed_user(test_client):
-    res = test_client.get('/auth/s3-presigned-post-params')
+def test_get_presigned_image_upload_url_without_confirmed_user(test_client):
+    res = test_client.get('/auth/presigned-image-upload-url')
     data = json.loads(res.data.decode())
 
     assert res.status_code == 401
     assert data.get('status') == 'authentication-required'
 
 
-def test_get_s3_presigned_post_params_with_confirmed_user(test_client,
-                                                          confirmed_user):
+def test_get_presigned_image_upload_url_with_confirmed_user(test_client,
+                                                            confirmed_user):
     auth_token = confirmed_user.generate_auth_token()
     res = test_client.get(
-        '/auth/s3-presigned-post-params',
+        '/auth/presigned-image-upload-url',
         headers=dict(Authorization='Bearer ' + auth_token))
+    data = json.loads(res.data.decode())
+
     assert res.status_code == 200
+    assert data.get('presigned_url') is not None

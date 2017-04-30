@@ -11,9 +11,10 @@ class Config(object):
     POSTGRES_PASS = 'postgres'
     GRAPHIQL = True
     JWT_SECRET = 'super secret random key'
-    SEND_SMS = False
-    AWS_KEY_MOBILE_CLIENT = 'AKIAJAZBEQGYD5GCWVMA'
-    AWS_SECRET_MOBILE_CLIENT = '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'
+    SEND_SMS = True
+    AWS_ACCESS_KEY_ID = 'AKIAJFXXGVF2Q7DYAZDA'
+    AWS_SECRET_ACCESS_KEY = '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'
+    CRUMB_IMAGES_BUCKET_NAME = 'crumb-image-uploads-dev'
 
 
 class TestConfig(Config):
@@ -36,6 +37,9 @@ class ProdConfig(Config):
     GRAPHIQL = False
     JWT_SECRET = os.environ.get('JWT_SECRET')
     SEND_SMS = True
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_MOBILE_CLIENT = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    IMAGE_UPLOADS_BUCKET_NAME = 'crumb-image-uploads-prod'
 
 
 def get_config_for_env():

@@ -31,3 +31,8 @@ def test_normalize_phone_number():
 
     assert lib.normalize_phone_number(valid_number_a) == '+12345678910'
     assert lib.normalize_phone_number(valid_number_b) == '+12345678910'
+
+
+def test_generate_presigned_image_upload_url():
+    url = lib.generate_presigned_image_upload_url()
+    assert isinstance(url, str)

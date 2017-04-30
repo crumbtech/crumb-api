@@ -1,8 +1,8 @@
-from flask import Blueprint, make_response, jsonify, request, g
+from flask import Blueprint, make_response, jsonify, request, g, current_app
 
 from src.models import User
 from src.database import db_session
-from src.lib import normalize_phone_number
+from src.lib import normalize_phone_number, generate_presigned_image_upload_url
 
 auth = Blueprint('auth', __name__)
 
@@ -81,10 +81,14 @@ def get_current_user_from_auth_header():
     return make_response(jsonify(g.current_user)), 200
 
 
-@auth.route('/s3-presigned-post-params', methods=['GET'])
-def get_s3_presigned_post_params():
+@auth.route('/presigned-image-upload-url', methods=['GET'])
+def get_presigned_image_upload_url():
     if g.current_user:
-        return make_response(jsonify('hey')), 200
+        extension = request.args.get('extension', '.jpg')
+
+        return make_response(jsonify({
+            'presigned_url': generate_presigned_image_upload_url(extension)
+        })), 200
     else:
         return make_response(jsonify({
             'status': 'authentication-required',

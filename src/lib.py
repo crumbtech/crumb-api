@@ -1,7 +1,10 @@
+import uuid
+
 import flask
 import jwt
 import phonenumbers
 import boto3
+from botocore.client import Config
 
 from src.config import config_for_env as config
 
@@ -46,3 +49,25 @@ def send_sms_message(number, message):
     else:
         # output to server log when sms is disabled
         flask.current_app.logger.info(message)
+
+
+def s3_client():
+    return boto3.client('s3',
+                        config=Config(signature_version='s3v4'),
+                        region_name='us-east-1',
+                        aws_access_key_id=config.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=config.AWS_SECRET_ACCESS_KEY)
+
+
+def generate_presigned_image_upload_url(extension='.jpg'):
+    """
+    generate a presigned PUT url for s3 images bucket.
+    create a random unique key name with extension for the new s3 object.
+    """
+    s3 = s3_client()
+    key_name = uuid.uuid4().hex + extension
+    return s3.generate_presigned_url(
+        'put_object',
+        HttpMethod='PUT',
+        Params=dict(Bucket=config.CRUMB_IMAGES_BUCKET_NAME,
+                    Key=key_name))
