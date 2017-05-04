@@ -21,7 +21,7 @@ def register():
             phone_number=normalized_phone).first()
         if existing:
             return make_response(jsonify({
-                'status': 'already-exists',
+                'message': 'already-exists',
             })), 202
         else:
             user = User(first_name=first_name, last_name=last_name,
@@ -54,7 +54,7 @@ def login():
 
         else:
             return make_response(jsonify({
-                'status': 'no-user-for-phone',
+                'message': 'no-user-for-phone',
             })), 401
 
 
@@ -74,7 +74,7 @@ def confirm():
             })), 200
         else:
             return make_response(jsonify({
-                'status': 'invalid-code',
+                'message': 'invalid-code',
             })), 401
 
 
@@ -100,5 +100,5 @@ def get_presigned_image_upload_url():
         })), 200
     else:
         return make_response(jsonify({
-            'status': 'authentication-required',
+            'message': 'authentication-required',
         })), 401

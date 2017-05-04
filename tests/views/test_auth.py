@@ -48,7 +48,7 @@ def test_register_with_existing_user(user, user_dict):
     # user_dict fixture.
     data = json.loads(res.data.decode())
     assert res.status_code == 202
-    assert data['status'] == 'already-exists'
+    assert data['message'] == 'already-exists'
     assert data.get('auth_token') is None
 
 
@@ -89,7 +89,7 @@ def test_login_with_invalid_phone(test_client, user):
     data = json.loads(res.data.decode())
 
     assert res.status_code == 401
-    assert data['status'] == 'no-user-for-phone'
+    assert data['message'] == 'no-user-for-phone'
     assert data.get('auth_token') is None
 
 
@@ -117,7 +117,7 @@ def test_confirm_user_with_invalid_code(test_client, user):
 
     assert res.status_code == 401
     assert data.get('auth_token') is None
-    assert data.get('status') == 'invalid-code'
+    assert data.get('message') == 'invalid-code'
 
 
 def test_get_presigned_image_upload_url_without_confirmed_user(test_client):
@@ -125,7 +125,7 @@ def test_get_presigned_image_upload_url_without_confirmed_user(test_client):
     data = json.loads(res.data.decode())
 
     assert res.status_code == 401
-    assert data.get('status') == 'authentication-required'
+    assert data.get('message') == 'authentication-required'
 
 
 def test_get_presigned_image_upload_url_with_confirmed_user(test_client,
