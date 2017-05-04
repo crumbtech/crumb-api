@@ -68,7 +68,7 @@ def generate_presigned_image_upload_url(user_id, extension='.jpg'):
     images in the s3 bucket so i'm going to play it safe.
     """
     s3 = s3_client()
-    key_name = "{}-{}{}".format(user_id, uuid.uuid4().hex, extension)
+    key_name = "{}{}{}".format(user_id, uuid.uuid4().hex, extension)
     return s3.generate_presigned_url(
         'put_object',
         HttpMethod='PUT',
