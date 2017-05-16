@@ -12,8 +12,8 @@ class Config(object):
     GRAPHIQL = True
     JWT_SECRET = 'super secret random key'
     SEND_SMS = False
-    AWS_ACCESS_KEY_ID = 'AKIAJFXXGVF2Q7DYAZDA'
-    AWS_SECRET_ACCESS_KEY = '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'
+    AWS_ACCESS_KEY_ID = ''
+    AWS_SECRET_ACCESS_KEY = ''
     CRUMB_IMAGES_BUCKET_NAME = 'crumb-image-uploads-dev'
 
 
